@@ -1,0 +1,40 @@
+body {
+    background-color: #0B4D42;
+    font-family: sans-serif;
+}
+
+h1 {
+    color: #EDFD8D;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+
+input, button {
+    background-color: inherit;
+    border: none;
+    border-bottom: 2px solid #EDFD8D;
+    color: #EDFD8D;
+    outline: none;
+    padding: 10px 0;
+    margin: 10px;
+    font-family: inherit;
+    font-size: 16px;
+}
+
+button {
+    border: 2px solid #EDFD8D;
+    padding: 10px 30px;
+    cursor: pointer;
+}
+
+canvas {
+    display: block;
+    background-color: #EDFD8D;
+    margin: 10px;
+    margin-top: 30px;
+}
+
+a {
+    color: #EDFD8D;
+    text-decoration: none;
+}
