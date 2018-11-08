@@ -1,5 +1,5 @@
 {{#if err}}
-    <p>random error message</p>
+    <span class="error">something went wrong, please try again</span>
 {{/if}}
 
 <form class="" method="post">
@@ -7,9 +7,10 @@
     <input type="text" name="last" placeholder="Last Name">
     <input type="hidden" name="sig" value="">
     <button type="submit">Submit</button>
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
 </form>
 
-<canvas id="canvas" width="600" height="100"></canvas>
+<canvas id="draw-canvas" width="600" height="100"></canvas>
 
 <script src="/jquery-3.3.1.min.js" charset="utf-8"></script>
 <script src="/script.js" charset="utf-8"></script>

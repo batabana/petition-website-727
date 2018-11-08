@@ -1,8 +1,8 @@
-const canvas = $("canvas");
+const canvas = $("#draw-canvas");
 const ctx = canvas[0].getContext("2d");
 
 canvas.on("mousedown", e => {
-    let offset = canvas.offset();
+    const offset = canvas.offset();
     let x = e.pageX - offset.left;
     let y = e.pageY - offset.top;
 

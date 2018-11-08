@@ -1,19 +1,23 @@
 body {
     background-color: #0B4D42;
-    font-family: sans-serif;
+    font-family: 'Montserrat', sans-serif;
+    color: #EDFD8D;
 }
 
 h1 {
-    color: #EDFD8D;
-    font-family: sans-serif;
     font-weight: bold;
+}
+
+.error {
+    font-weight: bold;
+    font-size: 20px;
 }
 
 input, button {
     background-color: inherit;
+    color: inherit;
     border: none;
     border-bottom: 2px solid #EDFD8D;
-    color: #EDFD8D;
     outline: none;
     padding: 10px 0;
     margin: 10px;
@@ -37,4 +41,12 @@ canvas {
 a {
     color: #EDFD8D;
     text-decoration: none;
+}
+
+#signature {
+    width: 600px;
+    height: 100px;
+    background-color: #EDFD8D;
+    display: block;
+    margin: 10px;
 }
