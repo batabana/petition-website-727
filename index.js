@@ -9,7 +9,10 @@ app.engine('handlebars', hb());
 app.set('view engine', 'handlebars');
 
 // db-stuff
-const {getSigners, saveSigners, getSignature} = require("./db.js");
+const {getSigners, saveSigners, getSignature, countSigners, createUser, getUser} = require("./db.js");
+
+// encryption
+const {hash, compare} = require("./bcrypt");
 
 // setup middleware to parse cookies
 const secrets = require("./secrets.json");
@@ -37,9 +40,94 @@ app.use(function(req, res, next) {
 // serve static files
 app.use(express.static("./public"));
 
+// if user is not logged in, redirect to login
+app.use(function(req, res, next) {
+    if (!req.session.userId && req.url != "/register" && req.url != "/login") {
+        res.redirect("/login");
+    } else {
+        next();
+    }
+});
+
 // routes
 app.get("/", (req, res) => {
-    res.redirect("/petition");
+    res.redirect("/login");
+});
+
+app.get("/register", (req,res) => {
+    if (req.session.userId) {
+        res.redirect("/petition");
+        return;
+    }
+    res.render("register", {
+        layout: "main",
+        title: "Sign up",
+        text: "Sign up"
+    });
+});
+
+app.post("/register", (req, res) => {
+    const { first, last, email, password } = req.body;
+    hash(password)
+        .then(hash => {
+            return createUser(first, last, email, hash);
+        })
+        .then(results => {
+            req.session.userId = results.rows[0].id;
+            // todo: get signatureId from db
+            res.redirect("/petition");
+        })
+        .catch(err => {
+            console.log("Error in POST /register: ", err);
+            res.render("register", {
+                layout: "main",
+                title: "Sign up",
+                text: "Sign up",
+                err: "Something went wrong, please try again."
+            });
+        });
+});
+
+app.get("/login", (req,res) => {
+    if (req.session.userId) {
+        res.redirect("/petition");
+        return;
+    }
+    res.render("login", {
+        layout: "main",
+        title: "Sign in",
+        text: "Sign in"
+    });
+});
+
+app.post("/login", (req, res) => {
+    const { email, password } = req.body;
+    getUser(email)
+        .then(results => {
+            req.session.userId = results.rows[0].id;
+            return compare(password, results.rows[0].password);
+        })
+        .then(doesmatch => {
+            if(doesmatch) {
+                res.redirect("/petition");
+            } else {
+                res.render("login", {
+                    layout: "main",
+                    title: "Sign in",
+                    text: "Sign in",
+                    err: "Wrong password, please try again."
+                });
+            }
+        })
+        .catch(err => {
+            console.log("Error in POST /login: ", err);
+            res.render("login", {
+                layout: "main",
+                title: "Sign in",
+                text: "Sign in",
+                err: "User unknown, please try again."
+            });
+        });
 });
 
 app.get("/petition", (req, res) => {
@@ -56,13 +144,14 @@ app.get("/petition", (req, res) => {
 
 app.post("/petition", (req, res) => {
     const { first, last, sig } = req.body;
-    saveSigners(first, last, sig)
+    const user_id = req.session.userId;
+    saveSigners(first, last, sig, user_id)
         .then(results => {
             req.session.signatureId = results.rows[0].id;
             res.redirect("/thankyou");
         })
         .catch(err => {
-            console.log(err);
+            console.log("Error in POST /petition: ", err);
             res.render("petition", {
                 layout: "main",
                 title: "Petition",
@@ -78,16 +167,18 @@ app.get("/thankyou", (req, res) => {
         return;
     }
     const id = req.session.signatureId;
-    getSignature(id)
-        .then(results => {
-            res.render("thankyou", {
-                layout: "main",
-                title: "Thank you",
-                text: "Thanks for supporting us!",
-                base64str: results.rows[0].sig
-            });
-        })
-        .catch(err => console.log(err));
+    Promise.all([
+        getSignature(id),
+        countSigners()
+    ]).then(results => {
+        res.render("thankyou", {
+            layout: "main",
+            title: "Thank you",
+            text: "Thanks for supporting us!",
+            base64str: results[0].rows[0].sig,
+            count: results[1].rows[0].count
+        });
+    }).catch(err => console.log("Error in GET /thankyou: ", err));
 });
 
 app.get("/signers", (req, res) => {
@@ -95,16 +186,28 @@ app.get("/signers", (req, res) => {
         res.redirect("/petition");
         return;
     }
-    getSigners().then(function(results) {
+    Promise.all([
+        getSigners(),
+        countSigners()
+    ]).then(function(results) {
         res.render("signers", {
             layout: "main",
             title: "Signers",
-            text: "XX people have signed so far:",
-            signers: results.rows
+            text: `${results[1].rows[0].count} people have signed so far:`,
+            signers: results[0].rows
         });
     }).catch(function(err) {
         return err;
     });
+});
+
+app.get('/logout', function(req, res) {
+    req.session = null;
+    res.redirect('/login');
+});
+
+app.get("/*", (req, res) => {
+    res.redirect("/petition");
 });
 
 app.listen(8080, () => console.log("Listening on 8080"));
