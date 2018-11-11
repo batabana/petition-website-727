@@ -62,7 +62,6 @@ app.get("/register", (req,res) => {
     res.render("register", {
         layout: "main",
         title: "Sign up",
-        text: "Sign up"
     });
 });
 
@@ -82,7 +81,6 @@ app.post("/register", (req, res) => {
             res.render("register", {
                 layout: "main",
                 title: "Sign up",
-                text: "Sign up",
                 err: "Something went wrong, please try again."
             });
         });
@@ -96,7 +94,6 @@ app.get("/login", (req,res) => {
     res.render("login", {
         layout: "main",
         title: "Sign in",
-        text: "Sign in"
     });
 });
 
@@ -104,7 +101,8 @@ app.post("/login", (req, res) => {
     const { email, password } = req.body;
     getUser(email)
         .then(results => {
-            req.session.userId = results.rows[0].id;
+            req.session.userId = results.rows[0].userId;
+            req.session.signatureId = results.rows[0].signaturesId;
             return compare(password, results.rows[0].password);
         })
         .then(doesmatch => {
@@ -114,7 +112,6 @@ app.post("/login", (req, res) => {
                 res.render("login", {
                     layout: "main",
                     title: "Sign in",
-                    text: "Sign in",
                     err: "Wrong password, please try again."
                 });
             }
@@ -124,7 +121,6 @@ app.post("/login", (req, res) => {
             res.render("login", {
                 layout: "main",
                 title: "Sign in",
-                text: "Sign in",
                 err: "User unknown, please try again."
             });
         });
@@ -138,7 +134,7 @@ app.get("/petition", (req, res) => {
     res.render("petition", {
         layout: "main",
         title: "Petition",
-        text: "Petition"
+        // text: "Petition"
     });
 });
 
@@ -155,7 +151,7 @@ app.post("/petition", (req, res) => {
             res.render("petition", {
                 layout: "main",
                 title: "Petition",
-                text: "Petition",
+                // text: "Petition",
                 err: err
             });
         });
@@ -174,7 +170,6 @@ app.get("/thankyou", (req, res) => {
         res.render("thankyou", {
             layout: "main",
             title: "Thank you",
-            text: "Thanks for supporting us!",
             base64str: results[0].rows[0].sig,
             count: results[1].rows[0].count
         });

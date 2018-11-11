@@ -43,9 +43,10 @@ exports.createUser = (first, last, email, password) => {
 
 exports.getUser = (email) => {
     return db.query(
-        `SELECT *
+        `SELECT users.id AS "userId", users.password, signatures.id AS "signaturesId"
         FROM users
-        WHERE email = $1`,
+        JOIN signatures ON users.id = signatures.user_id
+        WHERE users.email = $1`,
         [email]
     );
 };

@@ -1,16 +1,44 @@
 body {
-    background-color: #0B4D42;
+    margin: 0;
     font-family: 'Montserrat', sans-serif;
     color: #EDFD8D;
+    background-color: #0B4D42;
 }
 
 h1 {
     font-weight: bold;
+    font-size: 25px;
 }
 
 .error {
     font-weight: bold;
     font-size: 20px;
+}
+
+.logo {
+    width: 150px;
+    vertical-align: middle;
+}
+
+header {
+    background-color: inherit;
+}
+
+header span {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.formbox {
+    background-color: inherit;
+    display: inline-block;
+    padding: 15px 25px;
+    margin-top: 30px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
 }
 
 input, button {
