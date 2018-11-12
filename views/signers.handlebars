@@ -1,4 +1,13 @@
 <h1>{{text}}</h1>
+
 {{#each signers}}
-    <p>{{first}} {{last}}</p>
+    {{#if url}}
+        <p><a href={{url}}>{{first}} {{last}}</a> {{age}} <a href="/signers/{{city}}">{{city}}</a></p>
+    {{else}}
+        <p>{{first}} {{last}} {{age}} <a href="/signers/{{city}}">{{city}}</a></p>
+    {{/if}}
 {{/each}}
+
+{{#if link}}
+    <a href="/signers">Click to see all supporters.</a>
+{{/if}}

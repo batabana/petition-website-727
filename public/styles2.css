@@ -2,5 +2,8 @@ body {
     background-image: url("/background2.jpg");
     background-repeat: no-repeat;
     background-position: 50% 25%;
-    text-align: center;
+}
+
+#logout {
+    color: #0B4D42;
 }

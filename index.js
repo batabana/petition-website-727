@@ -9,7 +9,7 @@ app.engine('handlebars', hb());
 app.set('view engine', 'handlebars');
 
 // db-stuff
-const {getSigners, saveSigners, getSignature, countSigners, createUser, getUser} = require("./db.js");
+const {getSigners, saveSigners, getSignature, countSigners, createUser, getUser, writeUserProfile} = require("./db.js");
 
 // encryption
 const {hash, compare} = require("./bcrypt");
@@ -74,13 +74,41 @@ app.post("/register", (req, res) => {
         .then(results => {
             req.session.userId = results.rows[0].id;
             // todo: get signatureId from db
-            res.redirect("/petition");
+            res.redirect("/profile");
         })
         .catch(err => {
             console.log("Error in POST /register: ", err);
             res.render("register", {
                 layout: "main",
                 title: "Sign up",
+                err: "Something went wrong, please try again."
+            });
+        });
+});
+
+app.get("/profile", (req, res) => {
+    res.render("profile", {
+        layout: "main",
+        title: "Additional Information"
+    });
+});
+
+app.post("/profile", (req, res) => {
+    const user_id = req.session.userId;
+    let {age, city, url} = req.body;
+    if (age == "" && city == "" && url == "") {
+        res.redirect("/petition");
+        return;
+    } else if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        url = "http://" + url;
+    }
+    writeUserProfile(age, city, url, user_id)
+        .then( () => res.redirect("/petition"))
+        .catch(err => {
+            console.log("Error in POST /profile: ", err);
+            res.render("profile", {
+                layout: "main",
+                title: "Additional Information",
                 err: "Something went wrong, please try again."
             });
         });
@@ -102,7 +130,7 @@ app.post("/login", (req, res) => {
     getUser(email)
         .then(results => {
             req.session.userId = results.rows[0].userId;
-            req.session.signatureId = results.rows[0].signaturesId;
+            req.session.signatureId = results.rows[0].signatureId;
             return compare(password, results.rows[0].password);
         })
         .then(doesmatch => {
@@ -134,14 +162,15 @@ app.get("/petition", (req, res) => {
     res.render("petition", {
         layout: "main",
         title: "Petition",
+        logout: "yes"
         // text: "Petition"
     });
 });
 
 app.post("/petition", (req, res) => {
-    const { first, last, sig } = req.body;
+    const {sig } = req.body;
     const user_id = req.session.userId;
-    saveSigners(first, last, sig, user_id)
+    saveSigners(sig, user_id)
         .then(results => {
             req.session.signatureId = results.rows[0].id;
             res.redirect("/thankyou");
@@ -151,6 +180,7 @@ app.post("/petition", (req, res) => {
             res.render("petition", {
                 layout: "main",
                 title: "Petition",
+                logout: "yes",
                 // text: "Petition",
                 err: err
             });
@@ -167,11 +197,16 @@ app.get("/thankyou", (req, res) => {
         getSignature(id),
         countSigners()
     ]).then(results => {
+        const count = results[1].rows[0].count;
+        let text;
+        count < 2 ? text = "supporter" : text = "supporters";
         res.render("thankyou", {
             layout: "main",
             title: "Thank you",
+            logout: "yes",
             base64str: results[0].rows[0].sig,
-            count: results[1].rows[0].count
+            count: count,
+            text: `Have a look at ${count} ${text} so far.`
         });
     }).catch(err => console.log("Error in GET /thankyou: ", err));
 });
@@ -185,15 +220,39 @@ app.get("/signers", (req, res) => {
         getSigners(),
         countSigners()
     ]).then(function(results) {
+        let text;
+        results[1].rows[0].count < 2 ? text = "person has signed so far:" : text = "people have signed so far:";
         res.render("signers", {
             layout: "main",
             title: "Signers",
-            text: `${results[1].rows[0].count} people have signed so far:`,
+            logout: "yes",
+            text: `${results[1].rows[0].count} ${text}`,
             signers: results[0].rows
         });
-    }).catch(function(err) {
-        return err;
-    });
+    }).catch(err => console.log("Error in GET /signers: ", err));
+});
+
+app.get("/signers/:city", (req, res) => {
+    if (!req.session.signatureId) {
+        res.redirect("/petition");
+        return;
+    }
+    const city = req.params.city;
+    Promise.all([
+        getSigners(city),
+        countSigners(city)
+    ]).then(function(results) {
+        let text;
+        results[1].rows[0].count < 2 ? text = `person from ${city} has signed so far:` : text = `people from ${city} have signed so far:`;
+        res.render("signers", {
+            layout: "main",
+            title: "Signers",
+            logout: "yes",
+            text: `${results[1].rows[0].count} ${text}`,
+            signers: results[0].rows,
+            link: "yes"
+        });
+    }).catch(err => console.log(`Error in GET /signers/${city} `, err));
 });
 
 app.get('/logout', function(req, res) {

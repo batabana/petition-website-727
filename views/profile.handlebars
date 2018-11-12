@@ -1,0 +1,15 @@
+<link rel="stylesheet" href="/styles2.css">
+
+<div class="formbox">
+    <h1>Additional info</h1>
+    {{#if err}}
+        <span class="error">{{err}}</span>
+    {{/if}}
+    <form class="" method="post">
+        <input type="text" name="age" placeholder="Age">
+        <input type="text" name="city" placeholder="City">
+        <input type="text" name="url" placeholder="https://">
+        <button type="submit">Continue</button>
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    </form>
+</div>
