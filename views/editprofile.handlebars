@@ -1,0 +1,19 @@
+<!-- <link rel="stylesheet" href="/styles2.css"> -->
+
+<div class="formbox">
+    <h1>Edit your profile</h1>
+    {{#if err}}
+        <span class="error">{{err}}</span>
+    {{/if}}
+    <form class="" method="post">
+        <input type="text" name="first" placeholder="First Name" value={{#profile}}{{first}}{{/profile}}>
+        <input type="text" name="last" placeholder="Last Name" value={{#profile}}{{last}}{{/profile}}>
+        <input type="email" name="email" placeholder="Email Address" value={{#profile}}{{email}}{{/profile}}>
+        <input type="password" name="password" placeholder="Password">
+        <input type="text" name="age" placeholder="Age" value={{#profile}}{{age}}{{/profile}}>
+        <input type="text" name="city" placeholder="City" value={{#profile}}{{city}}{{/profile}}>
+        <input type="text" name="url" placeholder="https://" value={{#profile}}{{url}}{{/profile}}>
+        <button type="submit">Update</button>
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    </form>
+</div>

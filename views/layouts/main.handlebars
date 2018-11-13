@@ -4,23 +4,32 @@
         <meta charset="utf-8">
         <title>{{title}}</title>
         <link rel="stylesheet" href="/styles.css">
+        <link rel="shortcut icon" href="/logo.png" />
         <link href="https://fonts.googleapis.com/css?family=Montserrat:300" rel="stylesheet">
     </head>
     <body>
         <header>
             <img src="/logo.png" alt="logo" class="logo">
             <span>Petition for free bike transport on BVG from 7pm to 7am</span>
-            <div></div>
+            <img id="nav-icon" src="/hamburgermenu.png" alt="nav">
         </header>
         <main>
+            <nav>
+                  <a href="/petition">Signature</a>
+                  <a href="/signers">Supporters</a>
+                  <a href="/profile/edit">Profile</a>
+                  <a href="/logout">Logout</a>
+            </nav>
             {{{body}}}
         </main>
         <footer>
             <div>
-                <p>&copy; 2018 One less car e.V.</p>
                 <img src="/bike.png" alt="bike">
+                <p>&copy; 2018 One less car e.V.</p>
             </div>
-            <a href="/logout" id="logout">Log out</a>
         </footer>
     </body>
 </html>
+
+<script src="/jquery-3.3.1.min.js" charset="utf-8"></script>
+<script src="/nav.js" charset="utf-8"></script>

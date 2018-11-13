@@ -8,6 +8,7 @@ body {
     min-height: 100vh;
     justify-content: space-between;
     align-items: center;
+    overflow-x: hidden;
 }
 
 h1 {
@@ -22,6 +23,10 @@ h1 {
 
 .logo {
     width: 150px;
+}
+
+main {
+    flex: 1;
 }
 
 header, footer {
@@ -53,6 +58,25 @@ footer img {
 
 header a {
     float: right;
+}
+
+nav {
+    position: absolute;
+    left: 100%;
+}
+
+nav.active {
+    /* transition: left 1s linear; */
+    position: relative;
+    left: 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+#nav-icon {
+    height: 30px;
+    cursor: pointer;
+    margin-right: 20px;
 }
 
 .formbox {

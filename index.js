@@ -9,7 +9,7 @@ app.engine('handlebars', hb());
 app.set('view engine', 'handlebars');
 
 // db-stuff
-const {getSigners, saveSigners, getSignature, countSigners, createUser, getUser, writeUserProfile} = require("./db.js");
+const {getSigners, saveSigners, getSignature, countSigners, createUser, getUser, writeProfile, getProfile, updateProfile, updateUser, deleteSignature, deleteUser, deleteProfile} = require("./db.js");
 
 // encryption
 const {hash, compare} = require("./bcrypt");
@@ -94,7 +94,7 @@ app.get("/profile", (req, res) => {
 });
 
 app.post("/profile", (req, res) => {
-    const user_id = req.session.userId;
+    const userId = req.session.userId;
     let {age, city, url} = req.body;
     if (age == "" && city == "" && url == "") {
         res.redirect("/petition");
@@ -102,7 +102,7 @@ app.post("/profile", (req, res) => {
     } else if (!url.startsWith("http://") && !url.startsWith("https://")) {
         url = "http://" + url;
     }
-    writeUserProfile(age, city, url, user_id)
+    writeProfile(age, city, url, userId)
         .then( () => res.redirect("/petition"))
         .catch(err => {
             console.log("Error in POST /profile: ", err);
@@ -111,6 +111,67 @@ app.post("/profile", (req, res) => {
                 title: "Additional Information",
                 err: "Something went wrong, please try again."
             });
+        });
+});
+
+app.get("/profile/edit", (req, res) => {
+    const userId = req.session.userId;
+    getProfile(userId)
+        .then( (results) => {
+            res.render("editprofile", {
+                layout: "main",
+                title: "Edit Profile",
+                profile: results.rows[0]
+            });
+        })
+        .catch(err => console.log("Error in GET /profile/edit: ", err));
+});
+
+app.post("/profile/edit", (req, res) => {
+    const userId = req.session.userId;
+    let {first, last, email, password, age, city, url} = req.body;
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        url = "http://" + url;
+    }
+
+    let promises;
+    if (password != "") {
+        promises = [
+            hash(password).then(hash => updateUser(userId, first, last, email, hash)),
+            updateProfile(age, city, url, userId)
+        ];
+    } else {
+        promises = [
+            updateUser(userId, first, last, email),
+            updateProfile(age, city, url, userId)
+        ];
+    }
+
+    Promise.all(promises)
+        .then(() => {
+            res.redirect("/petition");
+        })
+        .catch(err => {
+            console.log("Error in POST /profile/edit: ", err);
+            res.redirect("/profile/edit");
+        });
+});
+
+app.post("/profile/delete", (req, res) => {
+    const userId = req.session.userId;
+    let promises = [deleteUser(userId), deleteProfile(userId)];
+    if (req.session.signatureId) {
+        const signatureId = req.session.signatureId;
+        promises.push(deleteSignature(signatureId));
+    }
+
+    Promise.all(promises)
+        .then(() => {
+            res.redirect("/logout");
+        })
+        .catch(err => {
+            console.log("Error in POST /profile/delete: ", err);
+            res.redirect("/petition");
         });
 });
 
@@ -156,45 +217,43 @@ app.post("/login", (req, res) => {
 
 app.get("/petition", (req, res) => {
     if (req.session.signatureId) {
-        res.redirect("/thankyou");
+        res.redirect("/signature");
         return;
     }
     res.render("petition", {
         layout: "main",
-        title: "Petition",
-        logout: "yes"
+        title: "Petition"
         // text: "Petition"
     });
 });
 
 app.post("/petition", (req, res) => {
-    const {sig } = req.body;
-    const user_id = req.session.userId;
-    saveSigners(sig, user_id)
+    const {sig} = req.body;
+    const userId = req.session.userId;
+    saveSigners(sig, userId)
         .then(results => {
             req.session.signatureId = results.rows[0].id;
-            res.redirect("/thankyou");
+            res.redirect("/signature");
         })
         .catch(err => {
             console.log("Error in POST /petition: ", err);
             res.render("petition", {
                 layout: "main",
                 title: "Petition",
-                logout: "yes",
                 // text: "Petition",
                 err: err
             });
         });
 });
 
-app.get("/thankyou", (req, res) => {
+app.get("/signature", (req, res) => {
     if (!req.session.signatureId) {
         res.redirect("/petition");
         return;
     }
-    const id = req.session.signatureId;
+    const signatureId = req.session.signatureId;
     Promise.all([
-        getSignature(id),
+        getSignature(signatureId),
         countSigners()
     ]).then(results => {
         const count = results[1].rows[0].count;
@@ -203,12 +262,21 @@ app.get("/thankyou", (req, res) => {
         res.render("thankyou", {
             layout: "main",
             title: "Thank you",
-            logout: "yes",
             base64str: results[0].rows[0].sig,
             count: count,
             text: `Have a look at ${count} ${text} so far.`
         });
-    }).catch(err => console.log("Error in GET /thankyou: ", err));
+    }).catch(err => console.log("Error in GET /signature: ", err));
+});
+
+app.post("/signature", (req, res) => {
+    const signatureId = req.session.signatureId;
+    deleteSignature(signatureId)
+        .then(() => {
+            delete req.session.signatureId;
+            res.redirect("/petition");
+        })
+        .catch(err => console.log(`Error in POST /signature: `, err));
 });
 
 app.get("/signers", (req, res) => {
@@ -225,7 +293,6 @@ app.get("/signers", (req, res) => {
         res.render("signers", {
             layout: "main",
             title: "Signers",
-            logout: "yes",
             text: `${results[1].rows[0].count} ${text}`,
             signers: results[0].rows
         });
@@ -247,7 +314,6 @@ app.get("/signers/:city", (req, res) => {
         res.render("signers", {
             layout: "main",
             title: "Signers",
-            logout: "yes",
             text: `${results[1].rows[0].count} ${text}`,
             signers: results[0].rows,
             link: "yes"

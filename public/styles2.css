@@ -4,6 +4,10 @@ body {
     background-position: 50% 25%;
 }
 
-#logout {
-    color: #0B4D42;
+#nav-icon, #logout {
+    visibility: hidden;
+}
+
+main {
+    flex: 0;
 }
