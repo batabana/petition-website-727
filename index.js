@@ -15,10 +15,12 @@ const {getSigners, saveSigners, getSignature, countSigners, createUser, getUser,
 const {hash, compare} = require("./bcrypt");
 
 // setup middleware to parse cookies
-// const secrets = require("./secrets.json");
+if (!process.env.COOKIE_SECRET) {
+    var secrets = require("./secrets.json");
+}
 const cookieSession = require('cookie-session');
 app.use(cookieSession({
-    secret: process.env.COOKIE_SECRET,
+    secret: process.env.COOKIE_SECRET || secrets.cookieSecret,
     // delete after 2hr
     maxAge: 1000 * 60 * 60 * 2
 }));
