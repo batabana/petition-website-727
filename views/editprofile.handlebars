@@ -13,7 +13,11 @@
         <input type="text" name="age" placeholder="Age" value={{#profile}}{{age}}{{/profile}}>
         <input type="text" name="city" placeholder="City" value={{#profile}}{{city}}{{/profile}}>
         <input type="text" name="url" placeholder="https://" value={{#profile}}{{url}}{{/profile}}>
-        <button type="submit">Update</button>
+        <button type="submit">Update profile</button>
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    </form>
+    <form action="/profile/delete" method="post">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        <button>Delete profile</button>
     </form>
 </div>

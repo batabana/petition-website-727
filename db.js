@@ -1,6 +1,6 @@
 var spicedPg = require('spiced-pg');
 
-var db = spicedPg('postgres:postgres:postgres@localhost:5432/petition');
+var db = spicedPg(process.env.DATABASE_URL || 'postgres:postgres:postgres@localhost:5432/petition');
 
 exports.getSigners = (city) => {
     if (city) {

@@ -8,7 +8,7 @@ canvas.on("mousedown", e => {
 
     canvas.on("mousemove", function draw(e) {
         ctx.beginPath();
-        ctx.strokeStyle = "#0B4D42";
+        ctx.strokeStyle = "#21e6c1";
         ctx.lineWidth = 3;
         ctx.moveTo(x, y);
         x = e.pageX - offset.left;

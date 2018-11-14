@@ -1,17 +1,19 @@
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
 {{#if err}}
     <span class="error">something went wrong, please try again</span>
 {{/if}}
 
-<span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</span>
 <canvas id="draw-canvas" width="600" height="100"></canvas>
-
-<form class="" method="post">
-    <!-- <input type="text" name="first" placeholder="First Name">
-    <input type="text" name="last" placeholder="Last Name"> -->
-    <input type="hidden" name="sig" value="">
-    <button type="submit">Submit</button>
-    <input type="hidden" name="_csrf" value="{{csrfToken}}">
-</form>
+<br>
+<div class="align-buttons">
+    <form class="" method="post">
+        <input type="hidden" name="sig" value="">
+        <button class="center-button" type="submit">Submit signature</button>
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    </form>
+    <a href="/petition" class="fake-button">Clear signature</a>
+</div>
 
 <script src="/jquery-3.3.1.min.js" charset="utf-8"></script>
 <script src="/script.js" charset="utf-8"></script>

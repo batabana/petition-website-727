@@ -18,7 +18,7 @@ const {hash, compare} = require("./bcrypt");
 const secrets = require("./secrets.json");
 const cookieSession = require('cookie-session');
 app.use(cookieSession({
-    secret: secrets.cookieSecret,
+    secret: process.env.COOKIE_SECRET || secrets.cookieSecret,
     // delete after 2hr
     maxAge: 1000 * 60 * 60 * 2
 }));
@@ -67,23 +67,32 @@ app.get("/register", (req,res) => {
 
 app.post("/register", (req, res) => {
     const { first, last, email, password } = req.body;
-    hash(password)
-        .then(hash => {
-            return createUser(first, last, email, hash);
-        })
-        .then(results => {
-            req.session.userId = results.rows[0].id;
-            // todo: get signatureId from db
-            res.redirect("/profile");
-        })
-        .catch(err => {
-            console.log("Error in POST /register: ", err);
-            res.render("register", {
-                layout: "main",
-                title: "Sign up",
-                err: "Something went wrong, please try again."
+
+    if (password != "") {
+        hash(password)
+            .then(hash => {
+                return createUser(first, last, email, hash);
+            })
+            .then(results => {
+                req.session.userId = results.rows[0].id;
+                // todo: get signatureId from db
+                res.redirect("/profile");
+            })
+            .catch(err => {
+                console.log("Error in POST /register: ", err);
+                res.render("register", {
+                    layout: "main",
+                    title: "Sign up",
+                    err: "Something went wrong, please try again."
+                });
             });
+    } else {
+        res.render("register", {
+            layout: "main",
+            title: "Sign up",
+            err: "Please provide a password."
         });
+    }
 });
 
 app.get("/profile", (req, res) => {
@@ -153,7 +162,12 @@ app.post("/profile/edit", (req, res) => {
         })
         .catch(err => {
             console.log("Error in POST /profile/edit: ", err);
-            res.redirect("/profile/edit");
+            res.render("editprofile", {
+                layout: "main",
+                title: "Edit Profile",
+                profile: req.body,
+                err: "Something went wrong, please try again."
+            });
         });
 });
 
@@ -192,12 +206,14 @@ app.post("/login", (req, res) => {
         .then(results => {
             req.session.userId = results.rows[0].userId;
             req.session.signatureId = results.rows[0].signatureId;
-            return compare(password, results.rows[0].password);
+            return (compare(password, results.rows[0].password));
         })
-        .then(doesmatch => {
-            if(doesmatch) {
+        .then((doesmatch) => {
+            if(doesmatch == true) {
                 res.redirect("/petition");
             } else {
+                delete req.session.userId;
+                delete req.session.signatureId;
                 res.render("login", {
                     layout: "main",
                     title: "Sign in",
@@ -264,7 +280,7 @@ app.get("/signature", (req, res) => {
             title: "Thank you",
             base64str: results[0].rows[0].sig,
             count: count,
-            text: `Have a look at ${count} ${text} so far.`
+            text: `See total ${count} ${text}`
         });
     }).catch(err => console.log("Error in GET /signature: ", err));
 });
@@ -330,4 +346,4 @@ app.get("/*", (req, res) => {
     res.redirect("/petition");
 });
 
-app.listen(8080, () => console.log("Listening on 8080"));
+app.listen(process.env.PORT || 8080, () => console.log("Listening on 8080"));

@@ -2,6 +2,7 @@ body {
     background-image: url("/background2.jpg");
     background-repeat: no-repeat;
     background-position: 50% 25%;
+    color: #21e6c1;
 }
 
 #nav-icon, #logout {
@@ -10,4 +11,12 @@ body {
 
 main {
     flex: 0;
+}
+
+input, button {
+    border-bottom: 2px solid #21e6c1;
+}
+
+button {
+    border: 2px solid #21e6c1;
 }

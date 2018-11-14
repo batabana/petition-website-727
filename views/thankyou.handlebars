@@ -1,12 +1,10 @@
 <h1>Thanks for supporting us!</h1>
 <img src="{{base64str}}" alt="signature" id="signature">
-
-<a href="/signers">{{text}}</a>
-<form action="/signature" method="post">
-    <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    <button>Delete signature</button>
-</form>
-<form action="/profile/delete" method="post">
-    <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    <button>Delete profile</button>
-</form>
+<br>
+<div class="align-buttons">
+    <a href="/signers" class="fake-button">{{text}}</a>
+    <form action="/signature" method="post">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        <button class="center-button">Delete signature</button>
+    </form>
+</div>
