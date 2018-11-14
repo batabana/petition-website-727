@@ -279,7 +279,7 @@ app.get("/signature", (req, res) => {
         count < 2 ? text = "supporter" : text = "supporters";
         res.render("thankyou", {
             layout: "main",
-            title: "Thank you",
+            title: "Signature",
             base64str: results[0].rows[0].sig,
             count: count,
             text: `See total ${count} ${text}`
