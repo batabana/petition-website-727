@@ -15,10 +15,10 @@ const {getSigners, saveSigners, getSignature, countSigners, createUser, getUser,
 const {hash, compare} = require("./bcrypt");
 
 // setup middleware to parse cookies
-const secrets = require("./secrets.json");
+// const secrets = require("./secrets.json");
 const cookieSession = require('cookie-session');
 app.use(cookieSession({
-    secret: process.env.COOKIE_SECRET || secrets.cookieSecret,
+    secret: process.env.COOKIE_SECRET,
     // delete after 2hr
     maxAge: 1000 * 60 * 60 * 2
 }));
@@ -206,10 +206,10 @@ app.post("/login", (req, res) => {
         .then(results => {
             req.session.userId = results.rows[0].userId;
             req.session.signatureId = results.rows[0].signatureId;
-            return (compare(password, results.rows[0].password));
+            return compare(password, results.rows[0].password);
         })
-        .then((doesmatch) => {
-            if(doesmatch == true) {
+        .then(doesmatch => {
+            if(doesmatch) {
                 res.redirect("/petition");
             } else {
                 delete req.session.userId;
