@@ -47,6 +47,11 @@ main a {
 p a {
     display: inline;
     margin: 0;
+    color: #1f4287;
+}
+
+p a:hover {
+    color: #fa9f42;
 }
 
 header, footer {
@@ -102,20 +107,8 @@ nav a {
     padding: 10px 0;
 }
 
-/* #nav-icon {
-    height: 30px;
-    cursor: pointer;
-    margin-right: 20px;
-} */
-
-.formbox {
-    background-color: #071e3d;
-    display: inline-block;
-    padding: 30px 30px;
-    margin: 30px 0;
-    width: 300px;
-    border-radius: 5px;
-    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+nav a:hover {
+    color: white;
 }
 
 input, button {
@@ -131,6 +124,16 @@ input, button {
     display: block;
 }
 
+button, .fake-button {
+    box-shadow: 3px 3px #1f4287;
+    display: inline-block
+}
+
+button:hover, .fake-button:hover {
+	box-shadow: 2px 2px #1f4287;
+	transform: translate(1px, 1px);
+}
+
 button {
     border: 2px solid #071e3d;
     padding: 10px 30px;
@@ -144,12 +147,23 @@ button {
     margin: 10px;
 }
 
+.formbox {
+    background-color: #071e3d;
+    display: inline-block;
+    padding: 30px 30px;
+    margin: 30px 0;
+    width: 300px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+}
+
 .formbox input {
     border-bottom: 2px solid #21e6c1;
 }
 
 .formbox button {
     border: 2px solid #21e6c1;
+    box-shadow: 0 0;
 }
 
 .formbox {
@@ -157,19 +171,19 @@ button {
 }
 
 .formbox a {
-    color: #21e6c1;
+    color: #fa9f42;
     display: inline;
     margin: 0;
+}
+
+.formbox a:hover {
+    color: white;
 }
 
 canvas {
     background-color: #071e3d;
     margin: 10px;
     margin-top: 30px;
-}
-
-.center-button {
-    margin: 0 auto;
 }
 
 a {
@@ -192,11 +206,16 @@ a {
     margin: 10px;
 }
 
-/* nav icon */
+#demands {
+    width: 60%;
+    display: inline-block;
+}
+
+/* nav icon animation */
 
 #nav-icon {
-  width: 40px;
-  height: 35px;
+  width: 30px;
+  height: 20px;
   margin-right: 20px;
   -webkit-transform: rotate(0deg);
   -moz-transform: rotate(0deg);
@@ -212,7 +231,7 @@ a {
 #nav-icon span {
   display: block;
   position: absolute;
-  height: 5px;
+  height: 4px;
   width: 100%;
   background: #21e6c1;
   border-radius: 9px;
@@ -233,15 +252,15 @@ a {
 }
 
 #nav-icon span:nth-child(2),#nav-icon span:nth-child(3) {
-  top: 18px;
+  top: 10px;
 }
 
 #nav-icon span:nth-child(4) {
-  top: 36px;
+  top: 20px;
 }
 
 #nav-icon.open span:nth-child(1) {
-  top: 18px;
+  top: 10px;
   width: 0%;
   left: 50%;
 }
@@ -264,4 +283,82 @@ a {
   top: 18px;
   width: 0%;
   left: 50%;
+}
+
+/* bike loop animation */
+
+#bike-animation {
+    margin-top: 30px;
+}
+
+.centerBike {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: 26px;
+  margin-left: -12px;
+}
+
+.center {
+  position: absolute;
+  left: 50%;
+  margin-left: -50px;
+}
+
+#loop {
+  height: 100px;
+  width: 100px;
+  border: #1f4287 solid 4px;
+  border-radius: 200px;
+}
+
+#loop:before {
+  background: -moz-linear-gradient(left, rgba(31, 66, 135, 0) 0%, rgba(31, 66, 135, 1) 30%, rgba(31, 66, 135, 1) 70%, rgba(31, 66, 135, 0) 100%);
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(31, 66, 135, 0)), color-stop(30%, rgba(31, 66, 135, 1)), color-stop(70%, rgba(31, 66, 135, 1)), color-stop(100%, rgba(31, 66, 135, 0)));
+  background: -webkit-linear-gradient(left, rgba(31, 66, 135, 0) 0%, rgba(31, 66, 135, 1) 30%, rgba(31, 66, 135, 1) 70%, rgba(31, 66, 135, 0) 100%);
+  background: -o-linear-gradient(left, rgba(31, 66, 135, 0) 0%, rgba(31, 66, 135, 1) 30%, rgba(31, 66, 135, 1) 70%, rgba(31, 66, 135, 0) 100%);
+  background: -ms-linear-gradient(left, rgba(31, 66, 135, 0) 0%, rgba(31, 66, 135, 1) 30%, rgba(31, 66, 135, 1) 70%, rgba(31, 66, 135, 0) 100%);
+  background: linear-gradient(to right, rgba(31, 66, 135, 0) 0%, rgba(31, 66, 135, 1) 30%, rgba(31, 66, 135, 1) 70%, rgba(31, 66, 135, 0) 100%);
+  filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#001f4287', endColorstr='#001f4287', GradientType=1);
+  content: "";
+  display: block;
+  height: 4px;
+  left: -100px;
+  position: relative;
+  top: 100px;
+  width: 300px;
+}
+
+#bike-wrapper {
+  height: 108px;
+  width: 108px;
+  animation: drive 3s linear infinite;
+}
+
+#bike {
+  height: 24px;
+  width: 25px;
+  background-image: url("/bike_driver.png");
+}
+
+@keyframes drive {
+  0% {
+    margin-left: -364px;
+    opacity: 0;
+  }
+  33.33% {
+    transform: rotate(0deg);
+    margin-left: -50px;
+    opacity: 1;
+  }
+  66.66% {
+    transform: rotate(-360deg);
+    margin-left: -50px;
+    opacity: 1;
+  }
+  100% {
+    margin-left: 264px;
+    transform: rotate(-360deg);
+    opacity: 0;
+  }
 }
