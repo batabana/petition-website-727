@@ -145,17 +145,11 @@ app.post("/profile/edit", (req, res) => {
         url = "http://" + url;
     }
 
-    let promises;
+    let promises = [updateProfile(age, city, url, userId)];
     if (password != "") {
-        promises = [
-            hash(password).then(hash => updateUser(userId, first, last, email, hash)),
-            updateProfile(age, city, url, userId)
-        ];
+        promises.push(hash(password).then(hash => updateUser(userId, first, last, email, hash)));
     } else {
-        promises = [
-            updateUser(userId, first, last, email),
-            updateProfile(age, city, url, userId)
-        ];
+        promises.push(updateUser(userId, first, last, email));
     }
 
     Promise.all(promises)

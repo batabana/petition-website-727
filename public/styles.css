@@ -64,7 +64,7 @@ header, footer {
 }
 
 footer * {
-    margin: 1px 10px;
+    margin: 1px 5px;
     display: inline;
 }
 
@@ -78,9 +78,22 @@ footer p {
     font-size: 10px;
 }
 
+footer p:nth-child(2) {
+    margin-right: 15px;
+}
+
 footer img {
-    width: 30px;
-    vertical-align:middle;
+    width: 25px;
+}
+
+footer img:nth-child(3) {
+    width: 20px;
+}
+
+#equation {
+    vertical-align: baseline;
+    font-style: bold;
+    font-size: 25px;
 }
 
 header a {
@@ -361,4 +374,29 @@ a {
     transform: rotate(-360deg);
     opacity: 0;
   }
+}
+
+/* smartphone */
+
+@media only screen
+and (min-device-width : 75px)
+and (max-device-width : 500px) {
+    .logo {
+        width: 200px;
+    }
+    .formbox {
+        width: 600px;
+    }
+    body, h1, .error, header p, input, button {
+        font-size: 40px;
+    }
+    nav a {
+        font-size: 30px;
+    }
+    footer p {
+        font-size: 25px;
+    }
+    footer img {
+        width: 45px;
+    }
 }
