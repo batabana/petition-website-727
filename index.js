@@ -110,7 +110,7 @@ app.post("/profile", (req, res) => {
     if (age == "" && city == "" && url == "") {
         res.redirect("/petition");
         return;
-    } else if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    } else if (!url.startsWith("http://") && !url.startsWith("https://") && url != "") {
         url = "http://" + url;
     }
     writeProfile(age, city, url, userId)
