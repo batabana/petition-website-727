@@ -141,7 +141,7 @@ app.get("/profile/edit", (req, res) => {
 app.post("/profile/edit", (req, res) => {
     const userId = req.session.userId;
     let {first, last, email, password, age, city, url} = req.body;
-    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    if (!url.startsWith("http://") && !url.startsWith("https://") && url != "") {
         url = "http://" + url;
     }
 
