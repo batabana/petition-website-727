@@ -42,7 +42,7 @@ app.use(function(req, res, next) {
 // serve static files
 app.use(express.static("./public"));
 
-// if user is not logged in, redirect to login
+// redirects based on cookies
 app.use(function(req, res, next) {
     if (!req.session.userId && req.url != "/register" && req.url != "/login") {
         res.redirect("/login");
@@ -51,25 +51,44 @@ app.use(function(req, res, next) {
     }
 });
 
+function requireLoggedOutUser(req, res, next) {
+    if (req.session.userId) {
+        res.redirect("/petition");
+    } else {
+        next();
+    }
+}
+
+function requireNotSigned(req, res, next) {
+    if (req.session.signatureId) {
+        res.redirect("/signature");
+    } else {
+        next();
+    }
+}
+
+function requireSigned(req, res, next) {
+    if (!req.session.signatureId) {
+        res.redirect("/petition");
+    } else {
+        next();
+    }
+}
+
 // routes
 app.get("/", (req, res) => {
     res.redirect("/login");
 });
 
-app.get("/register", (req,res) => {
-    if (req.session.userId) {
-        res.redirect("/petition");
-        return;
-    }
+app.get("/register", requireLoggedOutUser, (req,res) => {
     res.render("register", {
         layout: "main",
         title: "Sign up",
     });
 });
 
-app.post("/register", (req, res) => {
+app.post("/register", requireLoggedOutUser, (req, res) => {
     const { first, last, email, password } = req.body;
-
     if (password != "") {
         hash(password)
             .then(hash => {
@@ -188,18 +207,14 @@ app.post("/profile/delete", (req, res) => {
         });
 });
 
-app.get("/login", (req,res) => {
-    if (req.session.userId) {
-        res.redirect("/petition");
-        return;
-    }
+app.get("/login", requireLoggedOutUser, (req,res) => {
     res.render("login", {
         layout: "main",
         title: "Sign in",
     });
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", requireLoggedOutUser, (req, res) => {
     const { email, password } = req.body;
     getUser(email)
         .then(results => {
@@ -230,15 +245,10 @@ app.post("/login", (req, res) => {
         });
 });
 
-app.get("/petition", (req, res) => {
-    if (req.session.signatureId) {
-        res.redirect("/signature");
-        return;
-    }
+app.get("/petition", requireNotSigned, (req, res) => {
     res.render("petition", {
         layout: "main",
         title: "Petition"
-        // text: "Petition"
     });
 });
 
@@ -261,11 +271,7 @@ app.post("/petition", (req, res) => {
         });
 });
 
-app.get("/signature", (req, res) => {
-    if (!req.session.signatureId) {
-        res.redirect("/petition");
-        return;
-    }
+app.get("/signature", requireSigned, (req, res) => {
     const signatureId = req.session.signatureId;
     Promise.all([
         getSignature(signatureId),
@@ -284,7 +290,7 @@ app.get("/signature", (req, res) => {
     }).catch(err => console.log("Error in GET /signature: ", err));
 });
 
-app.post("/signature", (req, res) => {
+app.post("/signature", requireSigned, (req, res) => {
     const signatureId = req.session.signatureId;
     deleteSignature(signatureId)
         .then(() => {
@@ -294,11 +300,7 @@ app.post("/signature", (req, res) => {
         .catch(err => console.log(`Error in POST /signature: `, err));
 });
 
-app.get("/signers", (req, res) => {
-    if (!req.session.signatureId) {
-        res.redirect("/petition");
-        return;
-    }
+app.get("/signers", requireSigned, (req, res) => {
     Promise.all([
         getSigners(),
         countSigners()
@@ -314,7 +316,7 @@ app.get("/signers", (req, res) => {
     }).catch(err => console.log("Error in GET /signers: ", err));
 });
 
-app.get("/signers/:city", (req, res) => {
+app.get("/signers/:city", requireSigned, (req, res) => {
     if (!req.session.signatureId) {
         res.redirect("/petition");
         return;
