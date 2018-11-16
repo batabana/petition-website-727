@@ -169,13 +169,16 @@ app.post("/profile/edit", (req, res) => {
 
 app.post("/profile/delete", (req, res) => {
     const userId = req.session.userId;
-    let promises = [deleteUser(userId), deleteProfile(userId)];
+    let promises = [deleteProfile(userId)];
     if (req.session.signatureId) {
         const signatureId = req.session.signatureId;
         promises.push(deleteSignature(signatureId));
     }
 
     Promise.all(promises)
+        .then(() => {
+            deleteUser(userId);
+        })
         .then(() => {
             res.redirect("/logout");
         })
