@@ -24,6 +24,7 @@ canvas.on("mousedown", function(e) {
 });
 
 canvas.on("touchstart", function(e) {
+    $("body").addClass(".lock-screen");
     if ($(e.target) == canvas) {
         e.preventDefault();
     }

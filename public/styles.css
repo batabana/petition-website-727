@@ -394,6 +394,13 @@ a {
     background-image: url("/bike_driver.png");
 }
 
+.lock-screen {
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+    position: fixed;
+}
+
 @keyframes drive {
     0% {
         margin-left: -364px;
