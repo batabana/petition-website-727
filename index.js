@@ -317,10 +317,6 @@ app.get("/signers", requireSigned, (req, res) => {
 });
 
 app.get("/signers/:city", requireSigned, (req, res) => {
-    if (!req.session.signatureId) {
-        res.redirect("/petition");
-        return;
-    }
     const city = req.params.city;
     Promise.all([
         getSigners(city),
