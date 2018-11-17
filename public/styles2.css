@@ -1,6 +1,7 @@
 body {
     background-image: url("/background2.jpg");
     background-repeat: no-repeat;
+    background-size: cover;
     background-position: 50% 25%;
     color: #21e6c1;
 }

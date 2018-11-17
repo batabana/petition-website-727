@@ -416,9 +416,6 @@ a {
     }
 }
 
-
-/* smartphone */
-
 @media only screen
 and (min-device-width : 75px)
 and (max-device-width : 500px) {
@@ -438,10 +435,14 @@ and (max-device-width : 500px) {
         font-size: 25px;
     }
     footer img {
-        width: 45px;
+        width: 55px;
+    }
+    footer img:nth-child(3) {
+        width: 40px;
     }
     #nav-icon {
         padding: 13px;
+        margin-left: 30px;
     }
     #nav-icon span:nth-child(2), #nav-icon span:nth-child(3) {
         top: 15px;
