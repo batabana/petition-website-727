@@ -104,7 +104,7 @@ app.post("/register", requireLoggedOutUser, (req, res) => {
                 res.render("register", {
                     layout: "main",
                     title: "Sign up",
-                    err: "Something went wrong, please try again."
+                    err: "Email address is already used."
                 });
             });
     } else {

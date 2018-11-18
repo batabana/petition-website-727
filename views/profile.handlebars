@@ -6,7 +6,7 @@
         <span class="error">{{err}}</span>
     {{/if}}
     <form class="" method="post">
-        <input type="text" name="age" placeholder="Age">
+        <input type="text" name="age" pattern="[0-9]{1,3}" placeholder="Age" autofocus>
         <input type="text" name="city" placeholder="City">
         <input type="text" name="url" placeholder="https://">
         <button type="submit">Save</button>

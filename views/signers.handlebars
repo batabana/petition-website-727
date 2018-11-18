@@ -2,7 +2,7 @@
 
 {{#each signers}}
     {{#if url}}
-        <p><a href={{url}}>{{first}} {{last}}</a> {{age}} <a href="/signers/{{city}}">{{city}}</a></p>
+        <p><a href={{url}} target="_blank">{{first}} {{last}}</a> {{age}} <a href="/signers/{{city}}">{{city}}</a></p>
     {{else}}
         <p>{{first}} {{last}} {{age}} <a href="/signers/{{city}}">{{city}}</a></p>
     {{/if}}

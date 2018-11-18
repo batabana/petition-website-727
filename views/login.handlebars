@@ -7,7 +7,7 @@
         <span class="error">{{err}}</span>
     {{/if}}
     <form class="" method="post">
-        <input type="text" name="email" placeholder="Email Address">
+        <input type="text" name="email" placeholder="Email Address" autofocus>
         <input type="password" name="password" placeholder="Password">
         <button type="submit">Sign in</button>
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
