@@ -22,7 +22,7 @@ HTML, CSS, JavaScript, jQuery, Handlebars, Node.js, Express, PostgreSQL
 * Run [setup.sql](setup.sql) to initialize tables in database.
 * Set `process.env.COOKIE_SECRET` or edit parameter directly in [index.js](index.js).
 
-```
+``` sh
 npm install
 node index.js
 ```
@@ -35,8 +35,8 @@ node index.js
 ### sign the petition
 ![sign](screenshots/sign.png)
 
-### signature
+### view signature
 ![signature](screenshots/signature.png)
 
-### edit your profile, navigation showing
+### edit profile, navigation showing
 ![edit profile](screenshots/edit_profile.png)
